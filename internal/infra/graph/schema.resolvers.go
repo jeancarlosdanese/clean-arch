@@ -7,7 +7,6 @@ package graph
 import (
 	"context"
 
-	"github.com/jeancarlosdanese/clean-arch/internal/entity"
 	"github.com/jeancarlosdanese/clean-arch/internal/infra/graph/model"
 	"github.com/jeancarlosdanese/clean-arch/internal/usecase"
 )
@@ -31,25 +30,33 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, input *model.OrderIn
 	}, nil
 }
 
-// Resolver para a query `listOrders`
-func (r *Resolver) ListOrders(ctx context.Context) ([]*entity.Order, error) {
+// ListOrders is the resolver for the listOrders field.
+func (r *queryResolver) ListOrders(ctx context.Context) ([]*model.Order, error) {
+	// Chame o caso de uso para buscar as ordens
 	orders, err := r.ListOrdersUseCase.Execute()
 	if err != nil {
 		return nil, err
 	}
-	var result []*entity.Order
+
+	// Converta as ordens do usecase para o tipo do GraphQL
+	var result []*model.Order
 	for _, order := range orders {
-		result = append(result, &entity.Order{
+		result = append(result, &model.Order{
 			ID:         order.ID,
 			Price:      order.Price,
 			Tax:        order.Tax,
 			FinalPrice: order.FinalPrice,
 		})
 	}
+
 	return result, nil
 }
 
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
+// Query returns QueryResolver implementation.
+func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
+
 type mutationResolver struct{ *Resolver }
+type queryResolver struct{ *Resolver }
