@@ -1,0 +1,6 @@
+CREATE TABLE orders (
+    id VARCHAR(34) PRIMARY KEY,
+    customer_name VARCHAR(100) NOT NULL,
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(50) NOT NULL
+);
