@@ -67,6 +67,7 @@ $GOPATH/bin/migrate -path ./db/migrations -database "mysql://root:root@tcp(local
 Compile e inicie o projeto:
 
 ```bash
+cd cmd/ordersystem
 go run main.go wire_gen.go
 ```
 
@@ -76,10 +77,10 @@ go run main.go wire_gen.go
 
 Use `curl`, **Postman** ou **Insomnia** para testar os endpoints REST.
 
-
 Arquivo de exemplo: `api/create_order.http`
 
 Criação de Pedido:
+
 ```http
 POST http://localhost:8000/order
 Content-Type: application/json
@@ -92,6 +93,7 @@ Content-Type: application/json
 ```
 
 Listando os Pedidos:
+
 ```http
 GET http://localhost:8000/orders
 Host: localhost:8000
@@ -103,11 +105,13 @@ Content-Type: application/json
 Use **Evans** ou **BloomRPC** para testar os serviços **gRPC**.
 
 **Comando Evans**
+
 ```bash
 evans -r repl
 ```
 
 No **REPL**, selecione o pacote e o serviço, e então chame os métodos:
+
 ```bash
 package pb
 service OrderService
@@ -120,6 +124,7 @@ call ListOrders
 [GraphQL Playground: http://localhost:8080/](http://localhost:8080/)
 
 Exemplo de `mutation` e `query` para registrar e listar pedidos:
+
 ```http
 mutation createOrder {
   createOrder(input: {id: "aaa", price: 33.3, tax: 2.1}) {
@@ -151,7 +156,27 @@ Dependências Go não resolvidas: Certifique-se de que o `GOPATH` está configur
 - **Docker** e **Docker Compose**: Para rodar os serviços de infraestrutura.
 - **Go**: Para desenvolvimento e execução do projeto.
 - **Protoc**: Para compilar os arquivos .proto.
+
 - **Evans** ou **BloomRPC**: Para testes **_gRPC_**.
+
+  ```bash
+  go install github.com/ktr0731/evans@latest
+  ```
+
 - **Insomnia** ou **Postman**: Para testar `endpoints` **_REST_** e **GraphQL**.
+
 - **migrate CLI**: Para gerenciar migrações de banco de dados.
 
+  ```bash
+  go install -tags 'mysql' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+  ```
+
+### Comandos uteis:
+
+```bash
+# acessar o MySql no Docker container
+docker-compose exec mysql bash
+
+# acessar  DB
+mysql -u root orders -p
+```

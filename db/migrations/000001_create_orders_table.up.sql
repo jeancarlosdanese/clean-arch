@@ -1,6 +1,7 @@
 CREATE TABLE orders (
-    id VARCHAR(34) PRIMARY KEY,
-    customer_name VARCHAR(100) NOT NULL,
-    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status VARCHAR(50) NOT NULL
-);
+    id varchar(34) NOT NULL,
+    price float NOT NULL,
+    tax float NOT NULL,
+    final_price float NOT NULL,
+    PRIMARY KEY (id)
+)
