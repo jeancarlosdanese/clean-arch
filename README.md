@@ -22,53 +22,26 @@ git clone https://github.com/seu-usuario/clean-arch.git
 cd clean-arch
 ```
 
-### 2. Instale as Dependências
+### 2. Inicialize os Contêineres
 
-Certifique-se de que todas as dependências Go estão instaladas:
-
-```bash
-go mod tidy
-```
-
-### 3. Configuração do Ambiente
-
-Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
-
-```.env
-DB_DRIVER=mysql
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=root
-DB_NAME=orders
-WEB_SERVER_PORT=:8000
-GRPC_SERVER_PORT=50051
-GRAPHQL_SERVER_PORT=8080
-```
-
-### 4. Inicialize os Contêineres
-
-Suba os serviços do MySQL e RabbitMQ usando Docker Compose:
+Suba os serviços do MySQL, RabbitMQ e da aplicação Go usando Docker Compose:
 
 ```bash
-docker-compose up -d
+docker-compose up -d --build
 ```
 
-### 5. Realize as Migrações do Banco de Dados
+Esse comando irá:
 
-Certifique-se de que a CLI `migrate` está instalada e execute as migrações:
+Compilar a aplicação Go na etapa de build do Dockerfile.
+Executar as migrações automaticamente no container da aplicação.
+Iniciar o serviço com suporte para REST, gRPC e GraphQL.
 
-```bash
-$GOPATH/bin/migrate -path ./db/migrations -database "mysql://root:root@tcp(localhost:3306)/orders" up
-```
+### 3. Verifique os Logs
 
-### 6. Compile e Inicie o Servidor
+Acompanhe os `logs` da aplicação para garantir que tudo está funcionando corretamente:
 
-Compile e inicie o projeto:
-
-```bash
-cd cmd/ordersystem
-go run main.go wire_gen.go
+```.bash
+docker logs -f clean-arch-app
 ```
 
 ## Instruções de Utilização

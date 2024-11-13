@@ -8,7 +8,7 @@ services:
       MYSQL_DATABASE: orders
       MYSQL_PASSWORD: root
     ports:
-      - 3306:3306
+      - "3306:3306"
     volumes:
       - .docker/mysql:/var/lib/mysql
 
@@ -17,8 +17,29 @@ services:
     container_name: rabbitmq
     restart: always
     ports:
-      - 5672:5672
-      - 15672:15672
+      - "5672:5672"
+      - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: clean-arch-app
+    depends_on:
+      - mysql
+      - rabbitmq
+    ports:
+      - "8000:8000"
+      - "50051:50051"
+      - "8080:8080"
+    volumes:
+      - ./.env:/app/.env
+    entrypoint:
+      [
+        "bash",
+        "-c",
+        "/usr/local/bin/wait-for-it.sh rabbitmq:5672 -t 20 -- /usr/local/bin/migrate -path ./db/migrations -database 'mysql://root:root@tcp(mysql:3306)/orders' up && ./clean-arch",
+      ]
